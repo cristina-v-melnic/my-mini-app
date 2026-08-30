@@ -1,71 +1,109 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 
-# Global variables
-DATA_TYPES = ["Table", "Text", "Image", "Video", "Audio"]
-FAMOUS_APPS = ["Instagram", "YouTube", "Pinterest", "TikTok", "Spotify", "Netflix", "Twitter", "ChatGPT"]
-DATA_TYPES_OF_APPS = ["Image", "Video", "Image", "Video", "Audio", "Video", "Text", "Text"]
+st.title("Random list app")
 
-st.title("🎈 My new app")
-st.write(
-    "Let's start building! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
-)
-st.write("How is this different from text?")
+tab1, tab2, tab3 = st.tabs([":dog: Top dog", "Ultimate trivia", "Recommendation"])
 
-################################################
-################################################
-st.header("Part 1 of app - Soul searching")
+with tab1:
+    st.header("Top dog")
+    
+    with st.expander("**Exercise 1** Guess my favourite!"):
+        st.write("Please create:")
+        st.checkbox("A list of comparable things you like ex. movies, books, songs, artists, foods, ice-creams etc.", key="1.1")
+        st.checkbox("A selection interface, i.e. drop-down", key="1.2")
+        st.checkbox("User clicks on a submit button.", key="1.3")
+        st.checkbox("Feedback pop-up on whether the user guessed it or not.", key="1.4")
+        st.checkbox("Give your riddle a header with and a short description.", key="1.5")
+        st.info("Useful commands: st.header(), st.write(), st.selectbox(), st.select_slider(), st.button(), st.balloons() (maybe try st radio too)")
+    
+    st.write(" All of these icons brought new waves of movement qualities and ideas into the choreography world. I love all of them, but...")
+    favourite_things = ["Shakira", "Charlie Chaplin", "Jung Kook", "Lady Gaga", "Michael Jackson"]
+    
+    guess = None
+    submitted = None
 
-st.write("I want to build a mini version of a famous app.")
-st.write("What apps come to mind?")
-apps_table = pd.DataFrame({"App Name": FAMOUS_APPS, "Data Type": DATA_TYPES_OF_APPS})
-edited_df = st.data_editor(apps_table, 
-                           num_rows="dynamic",
-                           use_container_width=True,
-                           column_config={
-                               "App Name": st.column_config.TextColumn("App Name", help="Name of the app"),
-                               "Data Type": st.column_config.SelectboxColumn("Data Type", options=DATA_TYPES, help="Type of data the app uses"),
-                           })
+    guess = st.selectbox("Which dancer so you think is my No1 inspiration?", favourite_things, index=None)
 
-################################################
-st.write("What is my favourite data type?")
-favourite_data_type = None
+    submitted = st.button("Submit!")
 
-# favourite_data_type = st.selectbox("Data types", DATA_TYPES)
-col1, col2 = st.columns(2)
-with col1: 
-    while favourite_data_type is None:
-        favourite_data_type = st.radio("Data types", DATA_TYPES)
-
-with col2:
-    if favourite_data_type:
-        st.metric("Favourite data type", favourite_data_type)
-
-################################################
-
-st.write("What is my favourite app that uses this data type?")
-favourite_app = None
-apps_favourite_type = [app for app, dtype in zip(FAMOUS_APPS, DATA_TYPES_OF_APPS) if dtype == favourite_data_type]
-favourite_app = st.selectbox("Apps", apps_favourite_type)
+    if (guess and submitted):
+        if guess=="Jung Kook":
+            st.success("That's correct!")
+            st.balloons()
+        else: 
+            st.error("Sadly not. Try again!")
 
 
-st.write("What is the user value that this data type delivers?")
+
+with tab2:
+
+    st.header("My trivia title")
+    with st.expander("**Exercise 2** Ultimate trivia"):
+        st.write("Please create:")
+        st.checkbox("A view with multiple tabs and place your first app there.", key="2.1")
+        st.checkbox("One numeric list and one categorical list linked to the favourite things, i.e. publication year and genre.", key="2.2")
+        st.checkbox("Wrap up the contents in a pandas dataframe, i.e. columns = [`authors`, `books`, `year`]", key="2.3")
+        st.checkbox("Create a 2 question about the 1st and 2nd property, where the contents of the question are randomly appearing. i.e. Who is the `author`(column name) of the book (random item from the `books` column).", key="2.4")
+        st.checkbox("Split the screen in two for each question with `st.columns()`",  key="2.5")
+        st.checkbox("Give your riddle a header with and a short description.", key="2.6")
+        st.info("Useful commands: pd.DataFrame(), st.columns(), with col1:, np.random.randint(), np.sort(), st.multiselect(), ")
+
+    st.write("My trivia description")
+
+    peak_activity_approx = [2005, 1920, 2020, 2010, 1995]
+    dance_style = ["Latin", "Jazz", "Urban", "Experimental", "Jazz"]
+    
+    dancer_df = pd.DataFrame({
+        "dancer": favourite_things,
+        "style": dance_style,
+        "peak_activity_approx": peak_activity_approx
+    })
 
 
-st.divider()
-st.header("Part 2 of app")
-table = st.file_uploader("Upload a CSV file", type=["csv"])
-text = st.text_area("Describe your app idea in a few sentences", placeholder="My app is a ...")
-speech = st.audio_input("Describe your app idea in a few sentences (optional)")
-image = st.camera_input("Take a picture of your app idea")
-prompt = st.text_input("Describe your app idea in a few sentences (optional)", placeholder="My app is a ...")
-if prompt:
-    st.write("You entered:", prompt)
 
-clicked = st.button("Completed")
-if clicked:
-    st.balloons()
-    st.write("Thanks for completing the app idea!")
-    st.write("You can now download your app idea as a CSV file.")
-    st.download_button("Download CSV", edited_df.to_csv(index=False), "app_idea.csv", "text/csv")
- 
+    c1, c2 = st.columns(2)
+            
+    with c1:
+        question1 = "Around which year did this artist have their peak success?"
+        dancers = dancer_df['dancer'].unique()
+        random_id = np.random.randint(len(dancers))
+        if "dancer" not in st.session_state:
+            st.session_state.dancer = dancer_df['dancer'][random_id]
+        dancer = st.session_state.dancer
+        st.info(dancer)
+        year_guess = st.select_slider(question1, np.sort(peak_activity_approx), value=None)
+        submit1 = None
+        submit1 = st.button("Submit year")
+        answer1 = dancer_df[dancer_df["dancer"]==dancer]["peak_activity_approx"].iloc[0]
+        if submit1:
+            if year_guess == answer1:
+                st.success("Bravo! You are an expert.")
+            else:
+                st.error("Please try again.")
+    with c2:
+        question2 = "Which artist is most representative of the following style?"
+        styles = dancer_df['style'].unique()
+        style_id = np.random.randint(len(styles))
+        if "style" not in st.session_state:
+            st.session_state.style = dancer_df['style'][style_id]
+        style = st.session_state.style
+        st.info(style)
+        dancer_guess = st.segmented_control(question2,dancer_df['dancer'])
+        st.write(dancer_guess)
+        answer2 = dancer_df[dancer_df["style"]==style]["dancer"].tolist()
+        submit2 = st.button("Submit dancer")
+        if submit2:
+            st.write(answer2)
+            st.write(dancer_guess in answer2)
+
+
+    import streamlit as st
+
+
+with tab3:
+    st.header("Recommendation")
+
+    notable_for = ["Adaptation", "Impressions", "Artistic Versatility", "Raw Expression", "Personality"]
+    
