@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+
+
 st.title("Random list app")
 
 tab1, tab2, tab3 = st.tabs([":dog: Top dog", "Ultimate trivia", "Recommendation"])
@@ -20,11 +22,12 @@ with tab1:
     
     st.write(" All of these icons brought new waves of movement qualities and ideas into the choreography world. I love all of them, but...")
     favourite_things = ["Shakira", "Charlie Chaplin", "Jung Kook", "Lady Gaga", "Michael Jackson"]
+    #notable_for = ["Adaptation", "Impressions", "Artistic Versatility", "Raw Expression", "Personality"]
     
     guess = None
     submitted = None
 
-    guess = st.selectbox("Which dancer so you think is my No1 inspiration?", favourite_things, index=None)
+    guess = st.selectbox("Which dancer so you think is my No1 inspiration?", options=favourite_things, index=None)
 
     submitted = st.button("Submit!")
 
@@ -119,18 +122,20 @@ with tab3:
         st.checkbox("Find at least 2 numeric features that would help determine the answer on the same scale. i.e. book length and original content in the 1-5 out of 5 scale", key="3.2")
         st.checkbox("Complete the dataframe with these new features for the existing objects.", key="3.3")
         st.checkbox("Ask the user to order the preferences from most important to least important features.", key="3.4")
-        st.checkbox("Create 2 models which will give advice at the same time. The first model generates the recommendations using a weighted sum approach of user preference and object score, while the other is fully random.", key="1.5")
-        st.checkbox("Provide both results at the same time, and ask the user which recommendation matches their preference.")
-        st.checkbox("Upon selection, show the rankings and tell the user if they were right about their assumed preferences.")
+        st.checkbox("Create 2 models which will give advice at the same time. The first model generates the recommendations using a weighted sum approach of user preference and object score, while the other is fully random.", key="3.5")
+        st.checkbox("Provide both results at the same time, and ask the user which recommendation matches their preference.", key="3.6")
+        st.checkbox("Upon selection, show the rankings and tell the user if they were right about their assumed preferences.", key="3.7")
         st.info("Useful commands: st.header(), st.write(), st.selectbox(), st.select_slider(), st.button(), st.balloons() (maybe try st radio too)")
     
 
+    st.subheader("Who is your dance idol mentor?")
+    st.write("Order the dancer traits according to how much it aligns with your inner compass.")
 
     versatility = [2,3,5,1,2]
     creativity = [2,5,4,5,5]
     skill = [4,5,3,2,4]
     personality = [5,4,3,4,5]
-    #notable_for = ["Adaptation", "Impressions", "Artistic Versatility", "Raw Expression", "Personality"]
+    
     features = ["versatility", "creativity", "skill", "personality"]
     #image = []
     
@@ -140,15 +145,44 @@ with tab3:
     dancer_df["personality"] = personality
 
     order1, order2, order3, order4 = st.columns(4)
-
+ 
     with order1:
-        or1 = st.selectbox(features)
+        or1 = st.selectbox(" 1:",features, index=None, key="order_1")        
     with order2:
-        or2 = st.selectbox(features-or1)
+        features2 = [f for f in features if f!=or1]
+        or2 = st.selectbox(" 2:",features2, index=None, key="order_2")
     with order3:
-        or3 = st.selectbox(features-or1-or2)
+        features3 = [f for f in features2 if f!=or2]
+        or3 = st.selectbox(" 3:", features3, index=None, key="order_3")
     with order4:
-        or4 = st.selectbox(features-or1-or2-or3)
+        features4 = [f for f in features3 if f!=or3]
+        if len(features4)==1:
+            or4 = features4[0]
+            st.write(" 4:")
+            st.write(or4)
+        else:
+            or4 = None
 
-    dancer_df["scores"] = 4*dancer_df[or1]
-    st.text(dancer_df["scores"])
+    submit_rec=None
+    submit_rec = st.button("Find out!", key = "rec_submit")
+
+    if or4 and submit_rec:
+        
+
+        dancer_df["scores"] = (4 * dancer_df[or1] +
+                               3 * dancer_df[or2] +
+                               2 * dancer_df[or3] +
+                               1 * dancer_df[or4] )
+        sorted_dancers = dancer_df[["dancer","scores"]].sort_values(by="scores", ascending=False)
+
+        advice_1 = sorted_dancers["dancer"].iloc[0]
+
+        st.write(advice_1)
+
+  
+    with st.expander("Check out the full table here!"):
+        st.dataframe(dancer_df)
+
+    if or4 and submit_rec:
+         with st.expander("Dancer scores:"):
+            st.dataframe(dancer_df[["dancer","scores"]].sort_values(by="scores", ascending=False))
