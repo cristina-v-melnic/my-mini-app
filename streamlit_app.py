@@ -45,8 +45,6 @@ with tab2:
         "peak_activity_approx": peak_activity_approx
     })
 
-
-
     c1, c2 = st.columns(2)
             
     with c1:
@@ -97,8 +95,6 @@ with tab2:
                 st.error(f"Not really. {dancer_guess} is best known as a {true_style.lower()} dancer!")
 
 with tab3:
-    st.header("Recommendation")
-
     st.subheader("Who is your dance idol mentor?")
     st.write("Order the dancer traits according to how much it aligns with your inner compass.")
 
