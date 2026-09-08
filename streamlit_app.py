@@ -86,15 +86,15 @@ with tab2:
 
         dancer_guess = st.segmented_control(question2,dancer_df['dancer'])
         st.info(style)
-        answer2 = dancer_df[dancer_df["style"]==style]["dancer"].tolist()
+        answer2 = dancer_df[dancer_df["style"]==style]["dancer"].iloc[0]
         submit2 = st.button("Submit dancer")
+
         if submit2:
             if answer2 == dancer_guess:
-                st.success("Wow! You know", dancer_guess, "well!")
+                st.success(f"Wow! You know {dancer_guess} well!")
             else:
-                st.error("Not really.",answer2,"is best known as a ", dancer_df[dancer_df["dancer"]==answer2[0]]['style'].iloc[0]," dancer!")
-
-
+                true_style=dancer_df[dancer_df["dancer"]==dancer_guess]["style"].iloc[0]
+                st.error(f"Not really. {dancer_guess} is best known as a {true_style.lower()} dancer!")
 
 with tab3:
     st.header("Recommendation")
