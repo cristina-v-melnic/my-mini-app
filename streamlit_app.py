@@ -69,17 +69,6 @@ with tab2:
     c1, c2 = st.columns(2)
             
     with c1:
-        with st.expander("**Exercise 3** (Un)beatable advice"):
-            st.write("Please create:")
-            st.checkbox("A relevant question to help the user find their next read/practice/inspiration/product/meal. i.e. Which book fits my interests right now?", key="3.1")
-            st.checkbox("Find at least 2 numeric features that would help determine the answer on the same scale. i.e. book length and original content in the 1-5 out of 5 scale", key="3.2")
-            st.checkbox("Complete the dataframe with these new features for the existing objects.", key="3.3")
-            st.checkbox("Ask the user to order the preferences from most important to least important features.", key="3.4")
-            st.checkbox("Create a model that returs the recommendations using a weighted sum approach of user preference and feature scores.", key="3.5")
-            st.checkbox("Ask the user if they can figure out your own preferred ordering that lead to the answer from the first exercise.", key="3.6")
-            st.checkbox("Add a  conditional pop-up for when the user selection is the same as the author's.")
-            st.info("Useful commands: st.subheader(), st.write(), st.selectbox(), st.button(), st.info()/success()/error(), st.balloons()")
-        
         question1 = "Around which year did this artist have their peak success?"
         dancers = dancer_df['dancer'].unique()
 
@@ -127,6 +116,17 @@ with tab2:
                 st.error(f"Not really. {dancer_guess} is best known as a {true_style.lower()} dancer!")
 
 with tab3:
+    with st.expander("**Exercise 3** (Un)beatable advice"):
+            st.write("Please create:")
+            st.checkbox("A relevant question to help the user find their next read/practice/inspiration/product/meal. i.e. Which book fits my interests right now?", key="3.1")
+            st.checkbox("Find at least 2 numeric features that would help determine the answer on the same scale. i.e. book length and original content in the 1-5 out of 5 scale", key="3.2")
+            st.checkbox("Complete the dataframe with these new features for the existing objects.", key="3.3")
+            st.checkbox("Ask the user to order the preferences from most important to least important features.", key="3.4")
+            st.checkbox("Create a model that returs the recommendations using a weighted sum approach of user preference and feature scores.", key="3.5")
+            st.checkbox("Ask the user if they can figure out your own preferred ordering that lead to the answer from the first exercise.", key="3.6")
+            st.checkbox("Add a  conditional pop-up for when the user selection is the same as the author's.")
+            st.info("Useful commands: st.subheader(), st.write(), st.selectbox(), st.button(), st.info()/success()/error(), st.balloons()")
+        
     st.subheader("Who is your dance idol mentor?")
     st.write("Order the dancer traits according to how much it aligns with your inner compass.")
 
